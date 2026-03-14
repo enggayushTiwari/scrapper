@@ -1,0 +1,117 @@
+import pandas as pd
+import requests
+import time
+
+def run_enrichment():
+    print("--- Starting Enrichment Engine ---")
+    
+    # Data Loading
+    try:
+        df = pd.read_csv('nashik_leads_raw.csv')
+    except Exception as e:
+        print(f"Error reading 'nashik_leads_raw.csv': {e}")
+        return
+    
+    # Ensure Website URL column exists and is string type to avoid .str accessor errors
+    if 'Website URL' not in df.columns:
+        print("Error: 'Website URL' column not found in CSV.")
+        return
+        
+    df['Website URL'] = df['Website URL'].fillna('N/A').astype(str)
+    
+    # Standardize missing websites
+    df['Website URL'] = df['Website URL'].replace(['N/A', 'None', 'nan', ''], pd.NA)
+    
+    # --- Phase 2: Tier 1 Leads ---
+    print("\n[Phase 2] Filtering Tier 1 (No Website) leads...")
+    
+    # Filter rows where website is NA
+    tier_1_mask = df['Website URL'].isna()
+    tier_1_df = df[tier_1_mask]
+    
+    if not tier_1_df.empty:
+        tier_1_df.to_csv('Tier_1_No_Website.csv', index=False, encoding='utf-8-sig')
+        print(f"-> Saved {len(tier_1_df)} leads to 'Tier_1_No_Website.csv'")
+    else:
+        print("-> No Tier 1 leads found (all entries have a website).")
+        
+    # --- Phase 3: Tier 2 Leads ---
+    print("\n[Phase 3] Validating Phase 3 (Tier 2) leads...")
+    tier_2_candidates = df[~tier_1_mask].copy()
+    
+    struggling_sites = []
+    
+    # Add a User-Agent header so the requests aren't blocked.
+    headers = {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
+    }
+    
+    if not tier_2_candidates.empty:
+        print(f"Pinging {len(tier_2_candidates)} websites...\n")
+        
+        for idx, row in tier_2_candidates.iterrows():
+            url = str(row['Website URL']).strip()
+            
+            # Ensure URL starts with http
+            if not (url.startswith('http://') or url.startswith('https://')):
+                url = 'http://' + url
+                
+            status_code = None
+            load_time = None
+            error_msg = None
+            
+            start_time = time.time()
+            
+            # Validation Logic
+            try:
+                # Set a timeout of 10 seconds
+                response = requests.get(url, headers=headers, timeout=10)
+                load_time = time.time() - start_time
+                status_code = response.status_code
+            except requests.exceptions.SSLError:
+                error_msg = 'SSL Error'
+            except requests.exceptions.ConnectionError:
+                error_msg = 'Connection Error'
+            except requests.exceptions.Timeout:
+                error_msg = 'Timeout'
+            except Exception as e:
+                error_msg = f'Other Error: {e}'
+                
+            if error_msg:
+                # Calculate load time even if it errored out
+                load_time = time.time() - start_time
+                
+            # Scoring/Filtering: throws an error (404, SSL, Connection) OR takes longer than 8 seconds
+            is_broken = False
+            if error_msg:
+                is_broken = True
+                print(f"[ERROR] {row['Business Name']} - {url} | Error: {error_msg} | Time: {load_time:.2f}s")
+            elif status_code and status_code >= 400:
+                is_broken = True
+                print(f"[HTTP {status_code}] {row['Business Name']} - {url} | Time: {load_time:.2f}s")
+            elif load_time and load_time > 8:
+                is_broken = True
+                print(f"[SLOW] {row['Business Name']} - {url} | Status: {status_code} | Time: {load_time:.2f}s")
+            else:
+                print(f"[OK] {row['Business Name']} - {url} | Status: {status_code} | Time: {load_time:.2f}s")
+                
+            if is_broken:
+                broken_lead = row.to_dict()
+                broken_lead['Validation URL'] = url
+                broken_lead['Status Code'] = status_code if status_code else error_msg
+                broken_lead['Load Time (s)'] = round(load_time, 2) if load_time else "N/A"
+                struggling_sites.append(broken_lead)
+    else:
+        print("-> No Tier 2 leads to validate (none have websites).")
+            
+    # Output: Save the struggling sites to a new CSV
+    if struggling_sites:
+        broken_df = pd.DataFrame(struggling_sites)
+        broken_df.to_csv('Tier_2_Broken_Sites.csv', index=False, encoding='utf-8-sig')
+        print(f"\n--- Output Phase 3 ---")
+        print(f"-> Saved {len(broken_df)} leads to 'Tier_2_Broken_Sites.csv'.")
+    elif not tier_2_candidates.empty:
+        print("\n-> Zero struggling websites found! All Tier 2 leads are healthy.")
+
+if __name__ == "__main__":
+    run_enrichment()
