@@ -1,6 +1,8 @@
 import pandas as pd
 import requests
 import time
+import whois
+from urllib.parse import urlparse
 
 def run_enrichment():
     print("--- Starting Enrichment Engine ---")
@@ -40,6 +42,7 @@ def run_enrichment():
     tier_2_candidates = df[~tier_1_mask].copy()
     
     struggling_sites = []
+    valid_sites = []
     
     # Add a User-Agent header so the requests aren't blocked.
     headers = {
@@ -101,6 +104,10 @@ def run_enrichment():
                 broken_lead['Status Code'] = status_code if status_code else error_msg
                 broken_lead['Load Time (s)'] = round(load_time, 2) if load_time else "N/A"
                 struggling_sites.append(broken_lead)
+            else:
+                valid_lead = row.to_dict()
+                valid_lead['Validation URL'] = url
+                valid_sites.append(valid_lead)
     else:
         print("-> No Tier 2 leads to validate (none have websites).")
             
@@ -112,6 +119,61 @@ def run_enrichment():
         print(f"-> Saved {len(broken_df)} leads to 'Tier_2_Broken_Sites.csv'.")
     elif not tier_2_candidates.empty:
         print("\n-> Zero struggling websites found! All Tier 2 leads are healthy.")
+
+    # --- Phase 4: Tier 3 Outdated Sites ---
+    print("\n[Phase 4] Checking domain age for Phase 3 valid leads...")
+    outdated_sites = []
+    
+    if valid_sites:
+        print(f"Running WHOIS lookups for {len(valid_sites)} websites...\n")
+        
+        for lead in valid_sites:
+            url = lead['Validation URL']
+            parsed_url = urlparse(url)
+            domain = parsed_url.netloc
+            
+            # Clean domain (remove www., ports, etc.)
+            if domain.startswith('www.'):
+                domain = domain[4:]
+            domain = domain.split(':')[0]
+            
+            try:
+                # Perform WHOIS lookup
+                w = whois.whois(domain)
+                creation_date = w.creation_date
+                
+                if not creation_date:
+                    print(f"[WHOIS SKIP] {domain} - No creation date found")
+                    continue
+                    
+                # whois can return a list of dates or a single datetime object
+                if isinstance(creation_date, list):
+                    creation_date = creation_date[0]
+                
+                # We attempt to access .year
+                year_created = creation_date.year
+                
+                print(f"[WHOIS OK] {domain} created in {year_created}")
+                
+                # Flag domains created before 2020
+                if year_created < 2020:
+                    outdated_lead = lead.copy()
+                    outdated_lead['Year Created'] = year_created
+                    outdated_sites.append(outdated_lead)
+            except Exception as e:
+                print(f"[WHOIS ERROR] Failed lookup for {domain}: {e}")
+                continue
+                
+        # Output Phase 4
+        if outdated_sites:
+            outdated_df = pd.DataFrame(outdated_sites)
+            outdated_df.to_csv('Tier_3_Outdated_Sites.csv', index=False, encoding='utf-8-sig')
+            print(f"\n--- Output Phase 4 ---")
+            print(f"-> Saved {len(outdated_df)} leads to 'Tier_3_Outdated_Sites.csv'.")
+        else:
+            print("\n-> Zero outdated websites found! All valid sites were created in 2020 or later.")
+    else:
+        print("-> No valid Tier 2 leads to check for Phase 4.")
 
 if __name__ == "__main__":
     run_enrichment()

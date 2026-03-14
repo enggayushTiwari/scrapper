@@ -18,11 +18,11 @@ def main():
         print("!!! Could not find 'scraper.py'. Please make sure it exists in the same directory. !!!")
         sys.exit(1)
         
-    # Phase 2 & 3: Enrichment Engine
-    print(">>> Starting Phase 2 & 3: Enrichment Engine (enrichment_engine.py) <<<")
+    # Phase 2, 3 & 4: Enrichment Engine
+    print(">>> Starting Phase 2, 3 & 4: Enrichment Engine (enrichment_engine.py) <<<")
     try:
         subprocess.run([sys.executable, 'enrichment_engine.py'], check=True)
-        print(">>> Phase 2 & 3 Completed Successfully <<<\n")
+        print(">>> Phase 2, 3 & 4 Completed Successfully <<<\n")
     except subprocess.CalledProcessError as e:
         print(f"!!! Error running enrichment_engine.py: {e} !!!")
         sys.exit(1)

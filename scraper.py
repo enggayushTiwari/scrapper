@@ -94,8 +94,8 @@ def scrape_google_maps():
                 
                 # Dynamic Scrolling
                 print(f"Scrolling for {category} in {location}...")
-                max_scrolls = 15
-                target_listings = 30
+                max_scrolls = 60
+                target_listings = 120  # Google Maps typically caps a single search scroll at around 120 listings
                 
                 for _ in range(max_scrolls):
                     feed_element.hover()
@@ -109,7 +109,7 @@ def scrape_google_maps():
                 
                 # Extraction
                 cards = page.locator('a[href*="/maps/place/"]').all()
-                listing_urls = [card.get_attribute('href') for card in cards[:30] if card.get_attribute('href')]
+                listing_urls = [card.get_attribute('href') for card in cards if card.get_attribute('href')]
                 
                 print(f"Extracting data for up to {len(listing_urls)} listings...")
 
