@@ -1,0 +1,79 @@
+﻿=========================================================================================
+                           NASHIK ROAD MARKET ANALYTICS
+=========================================================================================
+
+--- Phase 1: The Opportunity Matrix ---
+Category                  | Total  | Avg Rev  | Med Rev  | No Web %
+-----------------------------------------------------------------
+veterinary clinic         | 24     | 142.8    | 73.5     | 91.7%
+specialty coffee shop     | 50     | 195.4    | 27.5     | 90.0%
+unisex salon              | 82     | 23.4     | 7.0      | 85.4%
+premium bike modificatio  | 41     | 281.4    | 23.0     | 80.5%
+designer boutique         | 110    | 182.8    | 22.0     | 77.3%
+tax consultant            | 61     | 29.6     | 3.0      | 77.0%
+pet shop                  | 65     | 168.4    | 24.0     | 76.9%
+cafe                      | 117    | 326.6    | 82.0     | 76.9%
+crossfit box              | 119    | 94.5     | 54.0     | 76.5%
+restro bar                | 70     | 606.8    | 152.5    | 75.7%
+fine dining restaurant    | 64     | 1628.8   | 388.5    | 75.0%
+chartered accountant      | 119    | 25.9     | 7.0      | 70.6%
+homeopathy clinic         | 88     | 88.7     | 22.0     | 70.5%
+martial arts academy      | 27     | 48.8     | 12.0     | 70.4%
+physiotherapist           | 120    | 53.8     | 21.0     | 68.3%
+bridal makeup studio      | 82     | 48.0     | 20.0     | 67.1%
+used car dealer           | 105    | 417.4    | 18.0     | 66.7%
+yoga studio               | 50     | 52.0     | 28.0     | 66.0%
+chiropractor              | 38     | 1056.8   | 10.0     | 65.8%
+dentist                   | 119    | 90.9     | 28.0     | 64.7%
+premium bakery            | 111    | 196.8    | 68.0     | 63.1%
+premium salon             | 88     | 228.0    | 138.5    | 62.5%
+modular furniture studio  | 106    | 89.7     | 14.5     | 61.3%
+car detailing studio      | 46     | 95.5     | 38.0     | 60.9%
+tattoo studio             | 46     | 117.4    | 43.0     | 56.5%
+ceramic coating           | 15     | 119.6    | 25.0     | 53.3%
+custom jewelry designer   | 64     | 608.7    | 69.0     | 53.1%
+boutique architect        | 78     | 24.6     | 15.5     | 50.0%
+interior designer         | 116    | 82.0     | 18.5     | 47.4%
+nail bar                  | 22     | 35.5     | 30.0     | 45.5%
+
+
+--- Phase 2: The Ghost Matrix (Invisible Businesses) ---
+Category                  | Ghost Count
+--------------------------------------
+chartered accountant      | 29
+crossfit box              | 25
+designer boutique         | 23
+cafe                      | 21
+used car dealer           | 21
+restro bar                | 20
+unisex salon              | 18
+dentist                   | 16
+specialty coffee shop     | 15
+homeopathy clinic         | 15
+interior designer         | 14
+bridal makeup studio      | 14
+physiotherapist           | 14
+premium bakery            | 13
+modular furniture studio  | 12
+boutique architect        | 12
+tax consultant            | 11
+pet shop                  | 11
+car detailing studio      | 11
+premium bike modificatio  | 11
+premium salon             | 10
+chiropractor              | 10
+tattoo studio             | 7
+fine dining restaurant    | 7
+custom jewelry designer   | 7
+martial arts academy      | 7
+yoga studio               | 6
+nail bar                  | 5
+veterinary clinic         | 5
+ceramic coating           | 1
+
+
+Generating Visualizations...
+-> Saved nr_review_distribution.png
+-> Saved nr_reputation_matrix.png
+
+Analytics Complete.
