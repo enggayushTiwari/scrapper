@@ -8,10 +8,12 @@ def run_enrichment():
     print("--- Starting Enrichment Engine ---")
     
     # Data Loading
+    target_file = 'nashik_leads_raw_RUN_1.csv'
     try:
-        df = pd.read_csv('nashik_leads_raw.csv')
+        df = pd.read_csv(target_file)
+        print(f"Loaded '{target_file}' successfully.")
     except Exception as e:
-        print(f"Error reading 'nashik_leads_raw.csv': {e}")
+        print(f"Error reading '{target_file}': {e}")
         return
     
     # Ensure Website URL column exists and is string type to avoid .str accessor errors
@@ -46,7 +48,8 @@ def run_enrichment():
     
     # Add a User-Agent header so the requests aren't blocked.
     headers = {
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+        'Accept': 'text/html'
     }
     
     if not tier_2_candidates.empty:
@@ -64,21 +67,33 @@ def run_enrichment():
             error_msg = None
             
             start_time = time.time()
+            max_retries = 1
+            retries = 0
             
-            # Validation Logic
-            try:
-                # Set a timeout of 10 seconds
-                response = requests.get(url, headers=headers, timeout=10)
-                load_time = time.time() - start_time
-                status_code = response.status_code
-            except requests.exceptions.SSLError:
-                error_msg = 'SSL Error'
-            except requests.exceptions.ConnectionError:
-                error_msg = 'Connection Error'
-            except requests.exceptions.Timeout:
-                error_msg = 'Timeout'
-            except Exception as e:
-                error_msg = f'Other Error: {e}'
+            # Validation Logic with Retry Mechanism
+            while retries <= max_retries:
+                try:
+                    # Set a timeout of 10 seconds
+                    response = requests.get(url, headers=headers, timeout=10)
+                    load_time = time.time() - start_time
+                    status_code = response.status_code
+                    error_msg = None  # Clear error msg on success
+                    break # Success, escape retry loop
+                except requests.exceptions.SSLError:
+                    error_msg = 'SSL Error'
+                    break # Don't retry SSL errors
+                except requests.exceptions.ConnectionError:
+                    error_msg = 'Connection Error'
+                    if retries < max_retries:
+                        print(f"[RETRY] ConnectionError for {url}. Waiting 3 seconds...")
+                        time.sleep(3)
+                    retries += 1
+                except requests.exceptions.Timeout:
+                    error_msg = 'Timeout'
+                    break # Don't retry Timeouts
+                except Exception as e:
+                    error_msg = f'Other Error: {e}'
+                    break # Don't retry unknown errors
                 
             if error_msg:
                 # Calculate load time even if it errored out
@@ -108,6 +123,9 @@ def run_enrichment():
                 valid_lead = row.to_dict()
                 valid_lead['Validation URL'] = url
                 valid_sites.append(valid_lead)
+            
+            # Mandatory 2-second sleep between every ping to avoid overwhelming the network
+            time.sleep(2)
     else:
         print("-> No Tier 2 leads to validate (none have websites).")
             

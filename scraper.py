@@ -16,7 +16,7 @@ def scrape_google_maps():
         categories = ['international school']
         print("[MICRO-TEST MODE] Running with 1 location, 1 category, limit 3 leads.\n")
     else:
-        locations = ['Nashik', 'Nashik Road']
+        locations = ['Nashik Road']
         categories = [
             # Food & Cafe (Owner is usually on-site, needs high visual appeal)
             'cafe', 'restro bar', 'fine dining restaurant', 'premium bakery', 'specialty coffee shop',
@@ -246,7 +246,7 @@ def scrape_google_maps():
         
     if results:
         df = pd.DataFrame(results).drop_duplicates(subset=['Business Name', 'Phone Number'], keep='first')
-        df.to_csv('nashik_leads_raw.csv', index=False, encoding='utf-8-sig')
+        df.to_csv('nashik_road_leads_raw.csv', index=False, encoding='utf-8-sig')
         print(f"\n--- SUCCESS! Total leads: {len(df)} ---")
         
         # Print summary table for micro-test
