@@ -9,8 +9,8 @@ def run_nr_analytics():
     print("                           NASHIK ROAD MARKET ANALYTICS")
     print("=========================================================================================\n")
     
-    raw_file = 'nashik_road_leads_raw.csv'
-    tier1_file = 'Tier_1_NashikRoad_No_Website.csv'
+    raw_file = 'data/nashik_road_leads_raw.csv'
+    tier1_file = 'data/Tier_1_NashikRoad_No_Website.csv'
     
     if not os.path.exists(raw_file) or not os.path.exists(tier1_file):
         print(f"Error: Required files not found. Ensure {raw_file} and {tier1_file} exist.")
@@ -103,7 +103,7 @@ def run_nr_analytics():
     plt.xlabel('Number of Reviews')
     plt.ylabel('Category')
     plt.tight_layout()
-    plt.savefig('nr_review_distribution.png')
+    plt.savefig('visuals/nr_review_distribution.png')
     plt.close()
     print("-> Saved nr_review_distribution.png")
 
@@ -117,7 +117,7 @@ def run_nr_analytics():
     plt.ylabel('Reviews (Log Scale)')
     plt.grid(True, which="both", ls="-", alpha=0.2)
     plt.tight_layout()
-    plt.savefig('nr_reputation_matrix.png')
+    plt.savefig('visuals/nr_reputation_matrix.png')
     plt.close()
     print("-> Saved nr_reputation_matrix.png")
     

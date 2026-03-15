@@ -246,7 +246,7 @@ def scrape_google_maps():
         
     if results:
         df = pd.DataFrame(results).drop_duplicates(subset=['Business Name', 'Phone Number'], keep='first')
-        df.to_csv('nashik_road_leads_raw.csv', index=False, encoding='utf-8-sig')
+        df.to_csv('data/nashik_road_leads_raw.csv', index=False, encoding='utf-8-sig')
         print(f"\n--- SUCCESS! Total leads: {len(df)} ---")
         
         # Print summary table for micro-test

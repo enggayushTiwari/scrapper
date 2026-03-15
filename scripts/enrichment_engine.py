@@ -8,7 +8,7 @@ def run_enrichment():
     print("--- Starting Enrichment Engine ---")
     
     # Data Loading
-    target_file = 'nashik_road_leads_raw.csv'
+    target_file = 'data/nashik_road_leads_raw.csv'
     try:
         df = pd.read_csv(target_file)
         print(f"Loaded '{target_file}' successfully.")
@@ -34,7 +34,7 @@ def run_enrichment():
     tier_1_df = df[tier_1_mask]
     
     if not tier_1_df.empty:
-        tier_1_df.to_csv('Tier_1_NashikRoad_No_Website.csv', index=False, encoding='utf-8-sig')
+        tier_1_df.to_csv('data/Tier_1_NashikRoad_No_Website.csv', index=False, encoding='utf-8-sig')
         print(f"-> Saved {len(tier_1_df)} leads to 'Tier_1_NashikRoad_No_Website.csv'")
     else:
         print("-> No Tier 1 leads found (all entries have a website).")
@@ -132,7 +132,7 @@ def run_enrichment():
     # Output: Save the struggling sites to a new CSV
     if struggling_sites:
         broken_df = pd.DataFrame(struggling_sites)
-        broken_df.to_csv('Tier_2_NashikRoad_Broken_Sites.csv', index=False, encoding='utf-8-sig')
+        broken_df.to_csv('data/Tier_2_NashikRoad_Broken_Sites.csv', index=False, encoding='utf-8-sig')
         print(f"\n--- Output Phase 3 ---")
         print(f"-> Saved {len(broken_df)} leads to 'Tier_2_NashikRoad_Broken_Sites.csv'.")
     elif not tier_2_candidates.empty:
@@ -185,7 +185,7 @@ def run_enrichment():
         # Output Phase 4
         if outdated_sites:
             outdated_df = pd.DataFrame(outdated_sites)
-            outdated_df.to_csv('Tier_3_NashikRoad_Outdated_Sites.csv', index=False, encoding='utf-8-sig')
+            outdated_df.to_csv('data/Tier_3_NashikRoad_Outdated_Sites.csv', index=False, encoding='utf-8-sig')
             print(f"\n--- Output Phase 4 ---")
             print(f"-> Saved {len(outdated_df)} leads to 'Tier_3_NashikRoad_Outdated_Sites.csv'.")
         else:

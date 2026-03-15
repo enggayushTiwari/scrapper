@@ -9,8 +9,8 @@ def run_sales_analytics():
     print("                           NASIK ROAD SALES INTELLIGENCE")
     print("=========================================================================================\n")
     
-    raw_file = 'nashik_road_leads_raw.csv'
-    tier1_file = 'Tier_1_NashikRoad_No_Website.csv'
+    raw_file = 'data/nashik_road_leads_raw.csv'
+    tier1_file = 'data/Tier_1_NashikRoad_No_Website.csv'
     
     if not os.path.exists(raw_file):
         print(f"Error: {raw_file} not found.")
@@ -67,7 +67,7 @@ def run_sales_analytics():
     output_cols = ['Category', 'Business Name', 'Rating', 'Reviews', 'Phone Number', 'Lead_Score']
     hitlist_export = hitlist_sorted[output_cols]
     
-    target_export = 'Nashik_Road_WhatsApp_Targets.csv'
+    target_export = 'exports/Nashik_Road_WhatsApp_Targets.csv'
     hitlist_export.to_csv(target_export, index=False, encoding='utf-8-sig')
     print(f"--- Phase 2: Hitlist Generated ---")
     print(f"-> Exported top 100 high-value leads to: {target_export}")
@@ -94,7 +94,7 @@ def run_sales_analytics():
                       textcoords = 'offset points')
 
     plt.tight_layout()
-    plt.savefig('roi_proof.png')
+    plt.savefig('visuals/roi_proof.png')
     plt.close()
     print("-> Saved roi_proof.png")
 

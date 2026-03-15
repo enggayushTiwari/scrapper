@@ -7,13 +7,13 @@ import os
 def run_advanced_analytics():
     print("--- Loading Data for Advanced Analytics ---")
     
-    raw_file = 'nashik_leads_raw_RUN_1.csv'
+    raw_file = 'data/nashik_leads_raw_RUN_1.csv'
     # Fallback to the micro-test file if the massive run hasn't occurred yet
     if not os.path.exists(raw_file):
-        raw_file = 'nashik_leads_raw.csv'
+        raw_file = 'data/nashik_leads_raw.csv'
         print(f"[INFO] '{raw_file}' substituted since massive run file not found.\n")
 
-    tier1_file = 'Tier_1_No_Website.csv'
+    tier1_file = 'data/Tier_1_No_Website.csv'
     
     try:
         raw_df = pd.read_csv(raw_file)
@@ -42,7 +42,7 @@ def run_advanced_analytics():
     plt.xlabel('Number of Reviews')
     plt.ylabel('Category')
     plt.tight_layout()
-    plt.savefig('review_distribution.png')
+    plt.savefig('visuals/review_distribution.png')
     plt.close()
 
     # =========================================================================
@@ -56,7 +56,7 @@ def run_advanced_analytics():
     plt.ylabel('Category')
     plt.legend(title='Location', loc='lower right')
     plt.tight_layout()
-    plt.savefig('geo_clustering.png')
+    plt.savefig('visuals/geo_clustering.png')
     plt.close()
 
     # =========================================================================

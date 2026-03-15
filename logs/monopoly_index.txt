@@ -1,0 +1,14 @@
+--- Monopoly Index Results ---
+physiotherapist: The top 10% (12 business/es) own 49.6% of all reviews.
+chartered accountant: The top 10% (12 business/es) own 58.4% of all reviews.
+crossfit box: The top 10% (12 business/es) own 34.0% of all reviews.
+interior designer: The top 10% (12 business/es) own 73.4% of all reviews.
+dentist: The top 10% (12 business/es) own 58.0% of all reviews.
+cafe: The top 10% (12 business/es) own 59.6% of all reviews.
+designer boutique: The top 10% (11 business/es) own 71.9% of all reviews.
+modular furniture studio: The top 10% (11 business/es) own 76.0% of all reviews.
+used car dealer: The top 10% (11 business/es) own 84.8% of all reviews.
+premium bakery: The top 10% (10 business/es) own 48.8% of all reviews.
+
+Total Independent: 2209
+Chain locations excluded: 34
